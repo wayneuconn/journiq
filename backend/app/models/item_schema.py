@@ -1,12 +1,13 @@
-from pydantic import BaseModel
 from enum import Enum
+
+from pydantic import BaseModel
 
 from app.models.payment_schema import PaymentDetails
 
 
 class ItemStatus(str, Enum):
-    packed = 'packed'
-    not_packed = 'not_packed'
+    packed = "packed"
+    not_packed = "not_packed"
 
 
 class GroupItem(BaseModel):

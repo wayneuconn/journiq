@@ -1,12 +1,12 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel
-from datetime import datetime
 
 
 class Role(str, Enum):
-    admin = 'admin'
-    member = 'member'
+    admin = "admin"
+    member = "member"
 
 
 class GroupBase(BaseModel):

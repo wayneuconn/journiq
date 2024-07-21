@@ -17,9 +17,9 @@ class RentalCarDetails(BaseModel):
 
 
 class TransportMethod(str, Enum):
-    flight = 'flight'
-    train = 'train'
-    car_rental = 'car_rental'
+    flight = "flight"
+    train = "train"
+    car_rental = "car_rental"
 
 
 class Transport(BaseModel):

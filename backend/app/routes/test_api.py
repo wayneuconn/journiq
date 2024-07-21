@@ -1,6 +1,6 @@
-from fastapi import HTTPException, Request, APIRouter
-
+from fastapi import APIRouter, HTTPException, Request
 from prisma.models import Member
+
 from app.models.user_schema import Member as MemberSchema
 
 public_router = APIRouter()
@@ -14,7 +14,7 @@ async def test_create_member(request: MemberSchema):
             data={
                 "nickName": "john_doe",
                 "email": "john@example.com",
-                "password": "123456"
+                "password": "123456",
             }
         )
         return new_member
