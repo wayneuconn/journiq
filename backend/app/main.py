@@ -7,7 +7,7 @@ from app.core.config import settings
 from prisma import Prisma
 
 # Initialize Prisma client
-prisma = Prisma()
+prisma = Prisma(auto_register=True)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

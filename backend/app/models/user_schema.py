@@ -1,5 +1,3 @@
-import uuid
-from dataclasses import Field
 from enum import Enum
 
 from pydantic import BaseModel
@@ -17,11 +15,11 @@ class GroupBase(BaseModel):
 
 
 class Member(BaseModel):
-    memberUID: str | None = uuid.uuid4()
+    memberUID: str
     nickName: str
     email: str
     password: str
-    created_at: datetime | None = datetime.now()
+    created_at: datetime
     role: Role = Role.member
     groups: list[GroupBase] = []
 
