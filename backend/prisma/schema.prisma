@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URI")
+}
+
+generator db {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+  previewFeatures      = ["relationJoins"]
+}
+
+generator erd {
+  provider = "npx -y prisma-erd-generator"
+  output   = "README.md"
+}
+
+// Define Enums
+enum ItemStatus {
+  packed
+  not_packed
+}
+
+enum TransportMethod {
+  flight
+  train
+  car_rental
+}
+
+enum Role {
+  admin
+  member
+}
+
+model Member {
+  memberUID  String       @id @default(uuid()) @db.Uuid
+  nickName   String
+  email      String        @unique
+  password   String
+  created_at DateTime?     @default(now()) @db.Timestamptz(3)
+  role       Role          @default(member)
+  groups     GroupMember[]
+}
+
+model Group {
+  groupUID String        @id @default(uuid()) @db.Uuid
+  name     String
+  members  GroupMember[]
+}
+
+model GroupMember {
+  group     Group  @relation(fields: [groupUID], references: [groupUID])
+  groupUID  String @db.Uuid
+  member    Member @relation(fields: [memberUID], references: [memberUID])
+  memberUID String @db.Uuid
+
+  @@id([groupUID, memberUID])
+}
