@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.core.config import settings
-from app.routes import test_api
+from app.api.users import users_routes
 from prisma import Prisma
 
 # Initialize Prisma client
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, title=settings.PROJECT_NAME)
 
-app.include_router(test_api.public_router)
+app.include_router(users_routes.public_router)
 
 if __name__ == "__main__":
     import uvicorn

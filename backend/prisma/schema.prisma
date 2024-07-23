@@ -16,43 +16,66 @@ generator erd {
 }
 
 // Define Enums
-enum ItemStatus {
-  packed
-  not_packed
-}
-
-enum TransportMethod {
-  flight
-  train
-  car_rental
-}
-
 enum Role {
-  admin
-  member
+  ADMIN
+  MEMBER
 }
 
-model Member {
-  memberUID  String       @id @default(uuid()) @db.Uuid
-  nickName   String
-  email      String        @unique
-  password   String
-  created_at DateTime?     @default(now()) @db.Timestamptz(3)
-  role       Role          @default(member)
-  groups     GroupMember[]
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  username         String          @unique
+  email            String          @unique
+  password         String
+  role             Role            @default(MEMBER)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  sentRequests     FriendRequest[] @relation("SentRequests")
+  receivedRequests FriendRequest[] @relation("ReceivedRequests")
+  friends          Friend[]        @relation("UserFriends")
+  addedBy          Friend[]        @relation("FriendsUser")
+  groups           Group[]         @relation("UserGroups")
+  userGroups       UserGroups[]
+}
+
+model Friend {
+  id       Int  @id @default(autoincrement())
+  userId   Int
+  friendId Int
+  user     User @relation("UserFriends", fields: [userId], references: [id])
+  friend   User @relation("FriendsUser", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId])
+}
+
+model FriendRequest {
+  id       Int                 @id @default(autoincrement())
+  userId   Int
+  friendId Int
+  status   FriendRequestStatus @default(PENDING)
+  user     User                @relation("SentRequests", fields: [userId], references: [id])
+  friend   User                @relation("ReceivedRequests", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId])
 }
 
 model Group {
-  groupUID String        @id @default(uuid()) @db.Uuid
-  name     String
-  members  GroupMember[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  users      User[]       @relation("UserGroups")
+  userGroups UserGroups[]
 }
 
-model GroupMember {
-  group     Group  @relation(fields: [groupUID], references: [groupUID])
-  groupUID  String @db.Uuid
-  member    Member @relation(fields: [memberUID], references: [memberUID])
-  memberUID String @db.Uuid
+model UserGroups {
+  userId  Int
+  groupId Int
+  user    User  @relation(fields: [userId], references: [id])
+  group   Group @relation(fields: [groupId], references: [id])
 
-  @@id([groupUID, memberUID])
+  @@id([userId, groupId])
 }

@@ -1,49 +1,65 @@
 ```mermaid
 erDiagram
 
-        ItemStatus {
-            packed packed
-not_packed not_packed
-        }
-    
-
-
-        TransportMethod {
-            flight flight
-train train
-car_rental car_rental
-        }
-    
-
-
         Role {
-            admin admin
-member member
+            ADMIN ADMIN
+MEMBER MEMBER
         }
     
-  "Member" {
-    String memberUID "🗝️"
-    String nickName 
+
+
+        FriendRequestStatus {
+            PENDING PENDING
+ACCEPTED ACCEPTED
+REJECTED REJECTED
+        }
+    
+  "User" {
+    Int id "🗝️"
+    String username 
     String email 
     String password 
-    DateTime created_at 
     Role role 
+    DateTime createdAt 
+    DateTime updatedAt 
+    }
+  
+
+  "Friend" {
+    Int id "🗝️"
+    }
+  
+
+  "FriendRequest" {
+    Int id "🗝️"
+    FriendRequestStatus status 
     }
   
 
   "Group" {
-    String groupUID "🗝️"
+    Int id "🗝️"
     String name 
     }
   
 
-  "GroupMember" {
+  "UserGroups" {
 
     }
   
-    "Member" o|--|| "Role" : "enum:role"
-    "Member" o{--}o "GroupMember" : "groups"
-    "Group" o{--}o "GroupMember" : "members"
-    "GroupMember" o|--|| "Group" : "group"
-    "GroupMember" o|--|| "Member" : "member"
+    "User" o|--|| "Role" : "enum:role"
+    "User" o{--}o "FriendRequest" : "sentRequests"
+    "User" o{--}o "FriendRequest" : "receivedRequests"
+    "User" o{--}o "Friend" : "friends"
+    "User" o{--}o "Friend" : "addedBy"
+    "User" o{--}o "Group" : "groups"
+    "User" o{--}o "UserGroups" : "userGroups"
+    "Friend" o|--|| "User" : "user"
+    "Friend" o|--|| "User" : "friend"
+    "FriendRequest" o|--|| "FriendRequestStatus" : "enum:status"
+    "FriendRequest" o|--|| "User" : "user"
+    "FriendRequest" o|--|| "User" : "friend"
+    "Group" o{--}o "User" : "users"
+    "Group" o{--}o "UserGroups" : "userGroups"
+    "UserGroups" o|--|| "User" : "user"
+    "UserGroups" o|--|| "Group" : "group"
 ```
